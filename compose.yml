@@ -1,0 +1,18 @@
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-8080}:${PORT:-8080}"
+    command: node ./bin/server.js
+    env_file:
+      - .env
+  rasa:
+    image: rasa/rasa:latest-full
+    volumes:
+      - "./rasa/:/app/"
+    ports:
+      - "${RASA_PORT}:${RASA_PORT}"
+    command: >
+      run --enable-api --port ${RASA_PORT}
