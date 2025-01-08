@@ -37,6 +37,9 @@ if ! command -v node &> /dev/null; then
   exit 1
 else
   echo "✔️ Node.js ditemukan."
+  echo "Menginstal module..."
+  cd ./web
+  npm install
 fi
 
 # Pastikan Docker Compose terpasang
@@ -51,7 +54,6 @@ fi
 
 # Jalankan Migrasi Database
 echo "Melakukan migrasi database..."
-cd ./web
 node ace migration:run
 if [ $? -ne 0 ]; then
   echo "❌ Terjadi kesalahan saat melakukan migrasi database."
