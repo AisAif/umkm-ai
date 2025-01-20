@@ -14,11 +14,10 @@ check_env_file() {
   fi
 }
 
-# Periksa file .env di ./web dan ./rasa
+# Periksa file .env
 missing_env=0
 
 check_env_file "./web/.env" || missing_env=1
-check_env_file "./rasa/.env" || missing_env=1
 
 # Jika ada file .env yang tidak ditemukan, keluar dengan kode 1
 if [ $missing_env -eq 1 ]; then
@@ -26,7 +25,7 @@ if [ $missing_env -eq 1 ]; then
   exit 1
 else
   echo "✔️ File .env ditemukan. Melakukan penggabungan..."
-  cat ./web/.env ./rasa/.env > ./.env
+  cat ./web/.env > ./.env
 fi
 
 # Pastikan Node.js terpasang
