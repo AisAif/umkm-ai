@@ -16,3 +16,4 @@ services:
       - "${RASA_PORT}:${RASA_PORT}"
     command: >
       run --enable-api --port ${RASA_PORT} -t ${RASA_SECRET}
+    user: root

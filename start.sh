@@ -25,6 +25,7 @@ if [ $missing_env -eq 1 ]; then
   exit 1
 else
   echo "✔️ File .env ditemukan. Melakukan penggabungan..."
+  rm ./.env
   cat ./web/.env > ./.env
 fi
 
@@ -60,10 +61,10 @@ if [ $? -ne 0 ]; then
 else
   echo "✔️ Langlah Migrasi Selesai."
 fi
+cd ./..
 
 # Jalankan Docker Compose dengan file .env
 echo "Menjalankan container dengan file .env..."
-cd ../
 docker compose --env-file ./.env up -d
 if [ $? -ne 0 ]; then
   echo "❌ Terjadi kesalahan saat menjalankan Docker Compose."
