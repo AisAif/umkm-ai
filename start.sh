@@ -1,74 +1,83 @@
 #!/bin/bash
 
-# Periksa file .env
+# Check for .env file
 check_env_file() {
   local path="$1"
   if [ ! -f "$path" ]; then
-    echo "❌ File .env tidak ditemukan di $path!"
-    echo "Silakan buat file .env atau salin dari .env.example:"
+    echo "❌ .env file not found at $path!"
+    echo "Please create a .env file or copy from .env.example:"
     echo "  cp $path.example $path"
     return 1
   else
-    echo "✅ File .env ditemukan di $path."
+    echo "✅ .env file found at $path."
     return 0
   fi
 }
 
-# Periksa file .env
+# Check for .env file
 missing_env=0
 
 check_env_file "./web/.env" || missing_env=1
 
-# Jika ada file .env yang tidak ditemukan, keluar dengan kode 1
+# If any .env file is missing, exit with code 1
 if [ $missing_env -eq 1 ]; then
-  echo "❌ File .env tidak lengkap. Perbaiki dan jalankan ulang script ini."
+  echo "❌ .env file is missing. Please fix it and re-run this script."
   exit 1
 else
-  echo "✔️ File .env ditemukan. Melakukan penggabungan..."
+  echo "✔️ .env file found. Merging..."
   rm ./.env
   cat ./web/.env > ./.env
 fi
 
-# Pastikan Node.js terpasang
-echo "Memeriksa apakah Node.js terpasang..."
+# Ensure Node.js is installed
+echo "Checking if Node.js is installed..."
 if ! command -v node &> /dev/null; then
-  echo "❌ Node.js tidak ditemukan!"
-  echo "Pastikan Node.js sudah terinstal dengan benar."
+  echo "❌ Node.js not found!"
+  echo "Please make sure Node.js is properly installed."
   exit 1
 else
-  echo "✔️ Node.js ditemukan."
-  echo "Menginstal module..."
+  echo "✔️ Node.js is installed."
+  echo "Installing dependencies..."
   cd ./web
   npm install
 fi
 
-# Pastikan Docker Compose terpasang
-echo "Memeriksa apakah Docker Compose terpasang..."
+# Ensure Docker Compose is installed
+echo "Checking if Docker Compose is installed..."
 if ! command -v docker compose &> /dev/null; then
-  echo "❌ Docker Compose tidak ditemukan!"
-  echo "Pastikan Docker Compose sudah terinstal dengan benar."
+  echo "❌ Docker Compose not found!"
+  echo "Please make sure Docker Compose is properly installed."
   exit 1
 else
-  echo "✔️ Docker Compose ditemukan."
+  echo "✔️ Docker Compose is installed."
 fi
 
-# Jalankan Migrasi Database
-echo "Melakukan migrasi database..."
+# Run Database Migrations
+echo "Running database migrations..."
 node ace migration:run
 if [ $? -ne 0 ]; then
-  echo "❌ Terjadi kesalahan saat melakukan migrasi database."
+  echo "❌ An error occurred while running database migrations."
   exit 1
 else
-  echo "✔️ Langlah Migrasi Selesai."
+  echo "✔️ Migration step completed."
 fi
 cd ./..
 
-# Jalankan Docker Compose dengan file .env
-echo "Menjalankan container dengan file .env..."
-docker compose --env-file ./.env up -d
+# Ask if the user wants to rebuild the image
+echo "Do you want to rebuild the image? (y/n)"
+read -r REBUILD
+
+if [[ "$REBUILD" == "y" || "$REBUILD" == "Y" ]]; then
+  echo "🔄 Rebuilding the image before starting Docker Compose..."
+  docker compose --env-file ./.env up --build -d
+else
+  echo "🚀 Starting containers without rebuilding..."
+  docker compose --env-file ./.env up -d
+fi
+
 if [ $? -ne 0 ]; then
-  echo "❌ Terjadi kesalahan saat menjalankan Docker Compose."
+  echo "❌ An error occurred while running Docker Compose."
   exit 1
 else
-  echo "✔️ Docker Compose berhasil dijalankan."
+  echo "✔️ Docker Compose started successfully."
 fi
