@@ -1,5 +1,36 @@
 #!/bin/bash
 
+# Change to the directory where this script is located (root repo)
+cd "$(dirname "$0")" || { echo "❌ Failed to change directory!"; exit 1; }
+
+# Stash local changes before pulling
+echo "🔄 Stashing local changes..."
+git stash --include-untracked
+
+# Pull the latest changes from the remote repository
+echo "⬇️ Pulling latest changes from remote..."
+git pull origin main --rebase
+if [ $? -ne 0 ]; then
+  echo "❌ Git pull failed!"
+  exit 1
+fi
+
+# Sync submodules
+echo "🔄 Syncing submodules..."
+git submodule sync --recursive
+git submodule update --init --recursive
+
+# Ensure submodules are up to date
+echo "⬇️ Updating submodules..."
+git submodule foreach git pull origin main
+
+# Restore stashed changes if any
+echo "🔄 Restoring local changes..."
+git stash pop || echo "⚠️ No stashed changes to apply."
+
+# Done
+echo "✅ Repository and submodules updated successfully!"
+
 # Check for .env file
 check_env_file() {
   local path="$1"
@@ -66,9 +97,11 @@ cd ./..
 # Ask if the user wants to rebuild the image
 echo "Do you want to rebuild the image? (y/n)"
 read -r REBUILD
+docker compose down
 
 if [[ "$REBUILD" == "y" || "$REBUILD" == "Y" ]]; then
   echo "🔄 Rebuilding the image before starting Docker Compose..."
+  docker compose down --rmi local
   docker compose --env-file ./.env up --build -d
 else
   echo "🚀 Starting containers without rebuilding..."
