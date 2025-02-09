@@ -28,7 +28,7 @@ jobs:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_PORT: ${{ secrets.VPS_PORT }}
-          REPO_PATH: ${{ vars.REPO_PATH }}
+          REPO_PATH: ${{ secrets.REPO_PATH }}
 
         run: |
           mkdir -p ~/.ssh
@@ -36,7 +36,4 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p $VPS_PORT -H "$VPS_HOST" >> ~/.ssh/known_hosts
 
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
-            cd $REPO_PATH
-            yes | ./deploy.sh
-          EOF
+          ssh -t -p $VPS_PORT $VPS_USER@$VPS_HOST "cd $REPO_PATH && ls && yes | ./start.sh"
