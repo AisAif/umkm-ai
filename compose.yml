@@ -8,6 +8,10 @@ services:
     command: node ./bin/server.js
     env_file:
       - .env
+    cpus: "0.3"
+    mem_limit: "512m"
+    restart: unless-stopped
+
   rasa:
     image: rasa/rasa:latest-full
     volumes:
@@ -17,3 +21,7 @@ services:
     command: >
       run --enable-api --port ${RASA_PORT} -t ${RASA_SECRET}
     user: root
+    cpus: "0.7"
+    mem_limit: "1200m"
+    restart: unless-stopped
+
