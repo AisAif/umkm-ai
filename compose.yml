@@ -27,7 +27,7 @@ services:
     # command: >
     #   run --enable-api --port ${RASA_PORT} -t ${RASA_SECRET}
     user: root
-    cpus: "0.7"
-    mem_limit: "1200m"
+    cpus: "1"
+    mem_limit: "2000m"
     restart: unless-stopped
 
