@@ -102,10 +102,10 @@ docker compose down
 if [[ "$REBUILD" == "y" || "$REBUILD" == "Y" ]]; then
   echo "🔄 Rebuilding the image before starting Docker Compose..."
   docker compose down --rmi local
-  docker compose --env-file ./.env up --build -d
+  DOCKER_BUILDKIT=0 docker compose --env-file ./.env up --build -d
 else
   echo "🚀 Starting containers without rebuilding..."
-  docker compose --env-file ./.env up -d
+  DOCKER_BUILDKIT=0 docker compose --env-file ./.env up -d
 fi
 
 if [ $? -ne 0 ]; then
