@@ -1,6 +1,6 @@
 # UMKM AI Application for Deployment
 
-A bundled UMKM AI application for deployment combining umkm-chatbot and umkm-website.
+A bundled UMKM AI application for deployment combining umkm-chatbot and umkm-website. Deployed App: [Obex Customlamp Web)(https://obexcustomlamp.biz.id) 
 
 ## Key Features
 - RASA config management (datasets, intents, stories)
