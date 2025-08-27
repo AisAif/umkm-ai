@@ -1,19 +1,24 @@
 # UMKM AI Application for Deployment
-## Description
-A simple Landing Page and Dashboard to manage RASA configuration to retrain and deploy chatbot models. This is a bundled UMKM AI application for deployment.
+
+A bundled UMKM AI application for deployment combining umkm-chatbot and umkm-website.
+
+## Key Features
+- RASA config management (datasets, intents, stories)
+- One-click retraining
+- Automated Docker deployment
+- Modular architecture (backend + frontend separation)
+- Production-ready with docker-compose
+
 ## Prerequisites
-- Docker
+- Docker & docker-compose
 - Node.js
 - Git
-- S3 Bucket
-- MySQL Server
+- S3 Bucket for storage
+- MySQL Server for data persistence
 
-## Run App
-```
+## Setup & Usage
+```bash
+git clone https://github.com/AisAif/umkm-ai.git
+cd umkm-ai
 ./start.sh
-```
-
-## Stop App
-```
 ./stop.sh
-```
